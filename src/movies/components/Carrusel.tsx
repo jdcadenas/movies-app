@@ -1,6 +1,6 @@
 // import Swiper core and required modules
 import { Navigation } from "swiper/modules";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -9,15 +9,22 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Box, Typography } from "@mui/material";
+import { MovieResponse, MovieShort } from "../interfaces";
 
-export const Carrusel = () => {
-  const [peliculas, setpeliculas] = useState<any[]>([]); //array de películas
+interface Props{
+  titulo: string,
+  slug: string
+}
+
+
+export const Carrusel: FC<Props> = ({titulo,slug}) => {
+  const [peliculas, setpeliculas] = useState<MovieShort[]>([]); //array de películas
   const obtenerPeliculas = async () => {
     
     const url =
-      `${import.meta.env.VITE_API_URL}/trending/movie/week?api_key=${import.meta.env.VITE_API_KEY}`;
+      `${import.meta.env.VITE_API_URL}/${slug}api_key=${import.meta.env.VITE_API_KEY}`;
     const res = await fetch(url);
-    const data = await res.json();
+    const data: MovieResponse = await res.json();
     setpeliculas(data.results);
   };
 
@@ -31,12 +38,12 @@ export const Carrusel = () => {
         fontWeight={600}
         sx={{ color: "#fff", fontsize: 20, marginBottom: 1 }}
       >
-        Lo más visto
+        { titulo }
       </Typography>
       <Swiper
         modules={[Navigation]}
         spaceBetween={10}
-        slidesPerView={3}
+        slidesPerView={5}
         navigation
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
