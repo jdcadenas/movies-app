@@ -13,14 +13,16 @@ import { Box, Typography } from "@mui/material";
 export const Carrusel = () => {
   const [peliculas, setpeliculas] = useState<any[]>([]); //array de películas
   const obtenerPeliculas = async () => {
+    
     const url =
-      "https://api.themoviedb.org/3/trending/movie/week?api_key=943eb331b223bc0ea9f2be25ead132ca";
+      `${import.meta.env.VITE_API_URL}/trending/movie/week?api_key=${import.meta.env.VITE_API_KEY}`;
     const res = await fetch(url);
     const data = await res.json();
     setpeliculas(data.results);
   };
 
   useEffect(() => {
+
     obtenerPeliculas();
   }, []);
   return (
