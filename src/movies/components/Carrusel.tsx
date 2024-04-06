@@ -10,6 +10,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Box, Typography } from "@mui/material";
 import { MovieResponse, MovieShort } from "../interfaces";
+import { suspend } from "suspend-react";
 
 interface Props {
   titulo: string;
@@ -17,19 +18,20 @@ interface Props {
 }
 
 export const Carrusel: FC<Props> = ({ titulo, slug }) => {
-  const [peliculas, setpeliculas] = useState<MovieShort[]>([]); //array de películas
-  const obtenerPeliculas = async () => {
+  //const [peliculas, setpeliculas] = useState<MovieShort[]>([]); //array de películas
+  const peliculas = suspend(async () => {
     const url = `${import.meta.env.VITE_API_URL}/${slug}api_key=${
       import.meta.env.VITE_API_KEY
     }`;
     const res = await fetch(url);
     const data: MovieResponse = await res.json();
-    setpeliculas(data.results);
-  };
+    return data.results;
+    //setpeliculas(data.results);
+  }, [slug]);
 
-  useEffect(() => {
-    obtenerPeliculas();
-  }, []);
+  // useEffect(() => {
+  //   obtenerPeliculas();
+  // }, []);
   return (
     <Box sx={{ marginbottom: 6 }}>
       <Typography
@@ -43,8 +45,6 @@ export const Carrusel: FC<Props> = ({ titulo, slug }) => {
         spaceBetween={10}
         slidesPerView={5}
         navigation
-        onSlideChange={() => console.log("slide change")}
-        onSwiper={(swiper) => console.log(swiper)}
       >
         {peliculas.map((pelicula) => (
           <SwiperSlide key={pelicula.id} className="card">
